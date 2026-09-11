@@ -9,6 +9,7 @@
 - 2026-09-10 起，项目重心从单纯阅读论文转为“代码和实验先跑通，论文与理论同步反查”。
 - 国庆前（2026-10-01 前）优先进入实验状态：跑通孙德峰老师团队相关代码、自带例子和 QPB 数据，形成可展示结果。
 - 同步精读 APDB / 当前项目论文，以及孙德峰老师团队 HAPEN / HPR-QP 相关论文，重点服务于算法对比、代码理解和汇报表达。
+- 2026-09-11 已跑通 HRQ 和 Hongpei PDHCG 两个 baseline，并开始整理 HAMS 榜单与 convex QCQP benchmark；后续重点是把自己的 QCQP solver、QCQP 转 SOCP 后的 HRQ、PDHCG 放入同一批实例中比较。
 
 ## 近期目标
 
@@ -16,6 +17,8 @@
 - 使用 QPB 网站数据做初步实验，熟悉该领域常用测试集和评测流程。
 - 后续拿到组内代码后，在同一批数据上对比组内算法和孙老师团队代码，说明速度、稳定性和工程优势。
 - 准备 20 页以内 PPT，争取 2026-09-19 向师姐汇报；若准备不足，最迟 2026-09-26 汇报。
+- 获取并整理 convex QCQP benchmark，优先确认 HAMS 中哪些实例可以直接使用。
+- 完成 QCQP 到 SOCP 的统一转换，并统一三套 solver 的 stopping criterion、tolerance、time limit、硬件和线程设置。
 
 ## 阅读时必须回答
 
@@ -46,6 +49,16 @@
 - HAPEN 加速和 HPR-QP 的 restricted Wolfe dual、symmetric Gauss-Seidel、range-space update 等机制。
 - QPB 数据组织方式和 QCQP 生成数据的建模合理性。
 - 李的项目截至 2026-09-10 仍未跑通，需要继续定位运行入口和依赖问题。
+- QCQP / functional SOCP / standard SOCP 之间的 formulation 对应关系，以及 KKT 条件如何逐项对应。
+- centered gap、error bound、quadratic growth 在局部线性收敛分析中的具体作用。
+- Exact-x / APDB 一类算法中的步长选择和 backtracking 机制。
+
+## 近期实验进展
+
+- 2026-09-11：HRQ 和 Hongpei PDHCG 已经作为 baseline 跑通，下一步准备与自己的 QCQP solver 做统一实验。
+- 2026-09-11：计划对同一个 convex QCQP 分别测试直接 QCQP solver、转 SOCP 后的 HRQ、PDHCG，并比较求解时间、收敛情况、数值稳定性和不同实例类型上的表现。
+- 2026-09-11：Hongpei PDHCG 已补充 CUDA / cuSPARSE 版本兼容处理。CUDA 13.3 / cuSPARSE 12.8.2+ 使用新的 `cusparseSpMVOp_bufferSize`、`cusparseSpMVOp_createDescr` 和 `CUSPARSE_SPMVOP_ALG_DEFAULT`；CUDA 13.2 / cuSPARSE 12.7.x 保留旧版 SpMVOp API；更旧版本 fallback 到标准 `cusparseSpMV`。
+- 2026-09-11：已在 CUDA 13.3.73 与 CUDA 13.2.78 环境下分别构建验证，`cmake --build build-cuda133 --parallel 4` 和 `cmake --build build-cuda132 --parallel 4` 均可通过。
 
 ## 沟通与展示
 
@@ -60,3 +73,5 @@
 - 跑通自带例子，再接 QPB 数据；每次运行记录命令、环境、数据、结果和失败原因。
 - 重读 APDB / 当前项目论文的摘要和 introduction，做“经典方法—order—最后/平均迭代点—与本文差异”表格。
 - 阅读 HPR-QP / HAPEN 论文，重点理解其模型、算法伪代码、GPU 实验和与 PDQP、SCS、Gurobi 等求解器的比较。
+- 先选择少量 convex QCQP / HAMS 实例跑通完整实验 pipeline。
+- 在正式 benchmark 中记录 PDHCG 的运行时间、收敛信息和 CUDA 版本。
